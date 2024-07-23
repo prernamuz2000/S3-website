@@ -1,0 +1,14 @@
+name: Deploy Node.js App to ECR # name
+
+on:
+  push: 
+   branches: # the branch to be deployed
+      - 'main'
+
+jobs:
+    build:
+        name: Build Image
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v2

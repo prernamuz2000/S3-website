@@ -23,9 +23,9 @@ jobs:
             # Programmatic authentication to aws
               uses: aws-actions/configure-aws-credentials@v1
               with:
-                    aws-access-key-id: $
+                    aws-access-key-id: $AKIA2GROVGICPXSCZY7S
                     aws-secret-access-key: $
-                    aws-region: $
+                    aws-region: $ap-northeast-1
 
             - name: Login to Amazon ECR
               id: login-ecr

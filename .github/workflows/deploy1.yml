@@ -1,43 +1,37 @@
-# deploy.yml
-name: Deploy Node js App to ECR # name
+name: Deploy to ECR
 
 on:
-  push: 
-   branches: # the branch to be deployed
-      - 'main'
-    
+  push:
+    branches:
+      - main
+
 jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    build:
-        
-        name: Build Image # build name
-        runs-on: ubuntu-latest # build os
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
 
-        steps: # sequence of tasks to be executed
+    - name: Install dependencies
+      run: npm install
 
-            - name: Check out code 
-            # Check the Dockerfile to build the docker image
-              uses: actions/checkout@v2
-            
-            - name: Configure AWS credentials 
-            # Programmatic authentication to aws
-              uses: aws-actions/configure-aws-credentials@v1
-              with:
-                    aws-access-key-id: $AKIA2GROVGICPXSCZY7S
-                    aws-secret-access-key: $
-                    aws-region: $ap-northeast-1
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.ECR_REPOSITORY }} .
 
-            - name: Login to Amazon ECR
-              id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
 
-            - name: Build, tag, and push image to Amazon ECR 
-            # copying the code from repo i.e. Dockerfile, versioning 
-            # the docker image, and pushing it to ECR.
-              env:
-                ECR_REGISTRY: $
-                ECR_REPOSITORY: simple_nodejs_app
-                IMAGE_TAG: nodejs_simple_app
-              run: |
-                docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: Tag Docker image
+      run: |
+        docker tag ${{ secrets.ECR_REPOSITORY }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+
+    - name: Push Docker image to Amazon ECR
+      run: |
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+

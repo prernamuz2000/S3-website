@@ -20,12 +20,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd home/ubuntu
         npm install
 
     - name: Build Docker image
       run: |
-        cd home/ubuntu
         docker build -t ${{ secrets.ECR_REPOSITORY }} .
 
     - name: Log in to Amazon ECR

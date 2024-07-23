@@ -25,7 +25,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        cd path/to/your/project
+        cd home/ubuntu
         docker build -t ${{ secrets.ECR_REPOSITORY }} .
 
     - name: Log in to Amazon ECR

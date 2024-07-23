@@ -20,7 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd path/to/your/project
+        cd home/ubuntu
         npm install
 
     - name: Build Docker image
